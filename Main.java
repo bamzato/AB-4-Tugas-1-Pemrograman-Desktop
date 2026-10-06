@@ -15,22 +15,48 @@ public class Main {
         };
 
         tampilkanMenu(daftarMenu);
-        String pesanan = masukkanPesanan(input);
-        Menu menuTerpilih = mencariPesanan(daftarMenu, pesanan);
+        int jumlahPesanan = 0;
+        double totalPesanan = 0.0;
+        String lanjut = "y";
+        do {
+            jumlahPesanan++;
+            System.out.println("\nPesanan ke-" + jumlahPesanan);
+
+            String pesanan = masukkanPesanan(input);
+            Menu menuTerpilih = mencariPesanan(daftarMenu, pesanan);
+
+            if (menuTerpilih != null) {
+                System.out.println("===================================");
+                System.out.println("Menu ditemukan!");
+                System.out.println("Nama     : " + menuTerpilih.getNama());
+                System.out.println("Harga    : Rp." + menuTerpilih.getHarga());
+                System.out.println("Kategori : " + menuTerpilih.getKategori());
+
+                int jumlah = tentukanJumlahPesanan(input);
+
+                double subtotal = hitungSubtotal(menuTerpilih, jumlah);
+
+                System.out.println("Jumlah   : " + jumlah);
+                System.out.println("Subtotal : Rp." + subtotal);
+
+                totalPesanan += subtotal;
+            } else {
+                System.out.println(
+                        "Pesanan tidak dapat diproses karena menu tidak ditemukan.");
+            }
+
+            if (jumlahPesanan < 4) {
+                System.out.print("\nApakah ingin memesan lagi? (y/n): ");
+                lanjut = input.nextLine();
+            } else {
+                lanjut = "n";
+                System.out.println("\nMaksimal 4 menu telah dipesan.");
+            }
+        } while (lanjut.equalsIgnoreCase("y"));
+
+        System.out.println("\n===================================");
+        System.out.println("Total Pesanan : Rp." + totalPesanan);
         System.out.println("===================================");
-        if (menuTerpilih != null) {
-            System.out.println("Menu ditemukan! ");
-            System.out.println("Nama        : " + menuTerpilih.getNama());
-            System.out.println("Harga       : Rp." + menuTerpilih.getHarga());
-            System.out.println("Kategori    : " + menuTerpilih.getKategori());
-
-            int jumlahPesanan = tentukanJumlahPesanan(input);
-            double subtotal = hitungSubtotal(menuTerpilih, jumlahPesanan);
-            System.out.println("Subtotal    : Rp." + subtotal);
-        } else {
-            System.out.println("Pesanan tidak dapat diproses karena menu tidak ditemukan.");
-        }
-
         input.close();
     }
 
