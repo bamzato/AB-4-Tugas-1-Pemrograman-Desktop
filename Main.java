@@ -1,5 +1,8 @@
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
         Menu[] daftarMenu = {
                 new Menu("Nasi Goreng", 25000, "Makanan"),
                 new Menu("Nasi Padang", 30000, "Makanan"),
@@ -12,12 +15,51 @@ public class Main {
         };
 
         tampilkanMenu(daftarMenu);
+        String pesanan = masukkanPesanan(input);
+        Menu menuTerpilih = mencariPesanan(daftarMenu, pesanan);
+        System.out.println("===================================");
+        if (menuTerpilih != null) {
+            System.out.println("Menu ditemukan! ");
+            System.out.println("Nama        : " + menuTerpilih.getNama());
+            System.out.println("Harga       : Rp." + menuTerpilih.getHarga());
+            System.out.println("Kategori    : " + menuTerpilih.getKategori());
+        } else {
+            System.out.println("Pesanan tidak dapat diproses karena menu tidak ditemukan.");
+        }
+
+        input.close();
     }
 
     private static void tampilkanMenu(Menu[] daftarMenu) {
+        System.out.println("===================================");
         System.out.println("Daftar Menu:");
+        System.out.println("===================================");
         for (Menu menu : daftarMenu) {
             System.out.println(menu);
         }
+        System.out.println("===================================");
+    }
+
+    private static String masukkanPesanan(Scanner input) {
+        System.out.print("Masukkan nama menu yang akan dipesan: ");
+        return input.nextLine();
+    }
+
+    private static Menu mencariPesanan(Menu[] daftarMenu, String pesanan) {
+        boolean menuDitemukan = false;
+        Menu menuDitemukanObj = null;
+        for (Menu menu : daftarMenu) {
+            if (menu.getNama().equalsIgnoreCase(pesanan)) {
+                menuDitemukan = true;
+                menuDitemukanObj = menu;
+                break;
+            }
+        }
+
+        if (!menuDitemukan) {
+            System.out.println("Menu tidak ditemukan!");
+        }
+
+        return menuDitemukanObj;
     }
 }
