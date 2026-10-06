@@ -23,6 +23,10 @@ public class Main {
             System.out.println("Nama        : " + menuTerpilih.getNama());
             System.out.println("Harga       : Rp." + menuTerpilih.getHarga());
             System.out.println("Kategori    : " + menuTerpilih.getKategori());
+
+            int jumlahPesanan = tentukanJumlahPesanan(input);
+            double subtotal = hitungSubtotal(menuTerpilih, jumlahPesanan);
+            System.out.println("Subtotal    : Rp." + subtotal);
         } else {
             System.out.println("Pesanan tidak dapat diproses karena menu tidak ditemukan.");
         }
@@ -61,5 +65,14 @@ public class Main {
         }
 
         return menuDitemukanObj;
+    }
+
+    private static int tentukanJumlahPesanan(Scanner input) {
+        System.out.print("Masukkan jumlah pesanan: ");
+        return Integer.parseInt(input.nextLine());
+    }
+
+    private static double hitungSubtotal(Menu menu, int jumlahPesanan) {
+        return menu.getHarga() * jumlahPesanan;
     }
 }
