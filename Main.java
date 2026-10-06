@@ -27,8 +27,6 @@ public class Main {
 
         // 4. Proses pemesanan
         do {
-            jumlahPesanan++;
-
             System.out.println("\nPesanan ke-" + jumlahPesanan);
 
             // Memasukkan nama menu
@@ -52,7 +50,8 @@ public class Main {
                 Pesanan pesananBaru = new Pesanan(menuTerpilih, jumlah);
 
                 // Menyimpan pesanan ke array
-                daftarPesanan[jumlahPesanan - 1] = pesananBaru;
+                daftarPesanan[jumlahPesanan] = pesananBaru;
+                jumlahPesanan++;
 
                 // Menampilkan subtotal
                 System.out.println("Jumlah   : " + jumlah);
@@ -94,15 +93,26 @@ public class Main {
                                 + pesanan.getSubtotal());
             }
         }
-
+        
         // 6. Menghitung total pesanan
-        double totalPesanan = hitungTotalPesanan(
-                daftarPesanan,
-                jumlahPesanan);
+        double totalPesanan = hitungTotalPesanan(daftarPesanan, jumlahPesanan);
+        double diskon = hitungDiskon(totalPesanan);
+        double totalSetelahDiskon = totalPesanan - diskon;
+        double totalSetelahPromo = hitungTotalSetelahPromo(daftarPesanan, jumlahPesanan, totalSetelahDiskon,
+                totalPesanan);
+        double pajak = hitungPajak(totalSetelahPromo);
+        double serviceCharge = hitungServiceCharge();
+        double totalBayar = hitungTotalBayar(totalSetelahPromo, pajak, serviceCharge);
 
         System.out.println("-----------------------------------");
-        System.out.println("Total Pesanan : Rp." + totalPesanan);
+        System.out.println("Total Pesanan       : Rp." + totalPesanan);
+        System.out.println("Diskon              : Rp." + diskon);
+        System.out.println("Total Setelah Diskon: Rp." + totalSetelahDiskon);
+        System.out.println("Total Setelah Promo : Rp." + totalSetelahPromo);
+        System.out.println("Pajak 10%           : Rp." + pajak);
+        System.out.println("Service Charge      : Rp." + serviceCharge);
         System.out.println("===================================");
+        System.out.println("Total Bayar         : Rp." + totalBayar);
 
         input.close();
     }
@@ -162,5 +172,66 @@ public class Main {
         }
 
         return total;
+    }
+
+    private static double hitungDiskon(double totalPesanan) {
+        if (totalPesanan > 100000) {
+            return totalPesanan * 0.10;
+        }
+
+        return 0;
+    }
+
+    private static Pesanan cariPesananMinuman(Pesanan[] daftarPesanan, int jumlahPesanan) {
+        for (int i = 0; i < jumlahPesanan; i++) {
+            Pesanan pesanan = daftarPesanan[i];
+            if (pesanan != null
+                    && pesanan.getMenu()
+                            .getKategori()
+                            .equalsIgnoreCase("Minuman")) {
+                return pesanan;
+            }
+        }
+
+        return null;
+    }
+
+    private static double hitungPromoB1G1(Pesanan pesanan, double totalPesanan) {
+
+        if (totalPesanan > 50000 && pesanan != null) {
+            int jumlah = pesanan.getJumlah();
+            int jumlahGratis = jumlah / 2;
+            int jumlahBayar = jumlah - jumlahGratis;
+            return jumlahBayar * pesanan.getMenu().getHarga();
+        }
+
+        return 0;
+    }
+
+    private static double hitungTotalSetelahPromo(Pesanan[] daftarPesanan, int jumlahPesanan, double totalSetelahDiskon,
+            double totalPesanan) {
+
+        Pesanan pesananPromo = cariPesananMinuman(daftarPesanan, jumlahPesanan);
+
+        if (totalPesanan > 50000 && pesananPromo != null) {
+            double subtotalMinuman = pesananPromo.getSubtotal();
+            double totalMinumanSetelahPromo = hitungPromoB1G1(pesananPromo, totalPesanan);
+            double potonganPromo = subtotalMinuman - totalMinumanSetelahPromo;
+            return totalSetelahDiskon - potonganPromo;
+        }
+
+        return totalSetelahDiskon;
+    }
+
+    private static double hitungPajak(double totalSetelahPromo) {
+        return totalSetelahPromo * 0.10;
+    }
+
+    private static double hitungServiceCharge() {
+        return 20000;
+    }
+
+    private static double hitungTotalBayar(double totalSetelahPromo, double pajak, double serviceCharge) {
+        return totalSetelahPromo + pajak + serviceCharge;
     }
 }
