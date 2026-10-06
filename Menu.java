@@ -34,6 +34,6 @@ public class Menu {
     }
 
     public String toString() {
-        return "Nama: " + nama + ", Harga: " + harga + ", Kategori: " + kategori;
+        return "Nama: " + nama + ", Harga: Rp." + harga + ", Kategori: " + kategori;
     }
 }
